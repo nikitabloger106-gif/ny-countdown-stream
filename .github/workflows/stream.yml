@@ -32,12 +32,10 @@ jobs:
           python3 -m http.server 8000 &
           sleep 2
 
-      - name: Launch Chrome
+- name: Start virtual display
         run: |
-          export DISPLAY=:99
-          mkdir -p /tmp/chrome-profile
-          google-chrome-stable --kiosk --no-sandbox --disable-infobars --autoplay-policy=no-user-gesture-required --no-first-run --no-default-browser-check --disable-sync --disable-background-networking --disable-default-apps --disable-popup-blocking --user-data-dir=/tmp/chrome-profile --window-size=1280,720 http://localhost:8000/index.html &
-          sleep 5
+          Xvfb :99 -screen 0 1920x1080x24 &
+          sleep 2
 
       - name: Stream to YouTube
         env:
