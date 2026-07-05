@@ -32,7 +32,7 @@ jobs:
           python3 -m http.server 8000 &
           sleep 2
 
-- name: Launch Chrome
+      - name: Launch Chrome
         run: |
           export DISPLAY=:99
           google-chrome-stable --kiosk --no-sandbox --disable-infobars \
