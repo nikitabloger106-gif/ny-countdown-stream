@@ -34,9 +34,14 @@ jobs:
           mkdir -p /tmp/chrome-profile
           google-chrome-stable --kiosk --no-sandbox --disable-infobars --autoplay-policy=no-user-gesture-required --no-first-run --no-default-browser-check --disable-sync --disable-background-networking --disable-default-apps --disable-popup-blocking --disable-translate --disable-features=Translate,TranslateUI --lang=ru-RU --accept-lang=ru-RU --user-data-dir=/tmp/chrome-profile --window-position=0,0 --window-size=1920,1080 http://localhost:8000/index.html &
           sleep 5
-      - name: Stream to YouTube
+- name: Stream to YouTube
         env:
           STREAM_KEY: ${{ secrets.YOUTUBE_STREAM_KEY }}
         run: |
           export DISPLAY=:99
-          ffmpeg -f x11grab -video_size 1920x1080 -framerate 30 -i :99.0 -stream_loop -1 -i music.mp3 -vcodec libx264 -preset veryfast -maxrate 4500k -bufsize 9000k -pix_fmt yuv420p -g 60 -c:a aac -b:a 128k -ar 44100 -f flv "rtmp://a.rtmp.youtube.com/live2/$STREAM_KEY"
+          END_TIME=$(( $(date +%s) + 20700 ))
+          while [ $(date +%s) -lt $END_TIME ]; do
+            ffmpeg -f x11grab -video_size 1920x1080 -framerate 30 -i :99.0 -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -vcodec libx264 -preset veryfast -maxrate 4500k -bufsize 9000k -pix_fmt yuv420p -g 60 -c:a aac -b:a 128k -ar 44100 -f flv "rtmp://a.rtmp.youtube.com/live2/$STREAM_KEY"
+            echo "Соединение оборвалось, переподключение через 3 секунды..."
+            sleep 3
+          done
