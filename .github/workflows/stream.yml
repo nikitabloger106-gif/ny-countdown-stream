@@ -46,7 +46,7 @@ jobs:
           export DISPLAY=:99
           END_TIME=$(( $(date +%s) + 20700 ))
           while [ $(date +%s) -lt $END_TIME ]; do
-            ffmpeg -f x11grab -video_size 1920x1080 -framerate 30 -i :99.0 -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -vcodec libx264 -preset veryfast -maxrate 4500k -bufsize 9000k -pix_fmt yuv420p -g 60 -c:a aac -b:a 128k -ar 44100 -f flv "rtmp://a.rtmp.youtube.com/live2/$STREAM_KEY"
+            ffmpeg -f x11grab -video_size 1920x1080 -framerate 30 -i :99.0 -stream_loop -1 -i music.mp3 -vcodec libx264 -preset veryfast -maxrate 4500k -bufsize 9000k -pix_fmt yuv420p -g 60 -c:a aac -b:a 128k -ar 44100 -f flv "rtmp://a.rtmp.youtube.com/live2/$STREAM_KEY"
             echo "Соединение оборвалось, переподключение через 3 секунды..."
             sleep 3
           done
