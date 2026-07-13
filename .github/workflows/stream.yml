@@ -43,6 +43,11 @@ jobs:
           python3 -m http.server 8000 &
           sleep 2
 
+      - name: Disable Chrome Translate via policy
+        run: |
+          sudo mkdir -p /etc/opt/chrome/policies/managed
+          echo '{"TranslateEnabled": false}' | sudo tee /etc/opt/chrome/policies/managed/policy.json
+
       - name: Launch Chrome
         run: |
           export DISPLAY=:99
